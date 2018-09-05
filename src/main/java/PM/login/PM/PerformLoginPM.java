@@ -12,11 +12,22 @@ public class PerformLoginPM {
     String login;
     String password;
     UserDAO userDao;
+    int cont = 0;
 
     public PerformLoginPM() {
         login = "";
         password = "";
+        cont =  0;
     }
+
+    public int getCont() {
+        return cont;
+    }
+
+    public void setCont(int cont) {
+        this.cont = cont;
+    }
+    
 
     public void setLogin(String login) {
         this.login = login;
@@ -43,15 +54,27 @@ public class PerformLoginPM {
     public PagePM pressLogin() throws Exception {
         login = login.trim();
         password = password.trim();
-        if(login.isEmpty() || password.isEmpty())
+        if(login.isEmpty() || password.isEmpty()) {        
+            cont++;
+            triedThreeTimes();
             throw new Exception("Empty fields");
+        }
+            
         
         User user = userDao.getByName(login);
-        if(user == null)
+        if(user == null) {
+            cont++;
+            triedThreeTimes();
             throw new Exception("Inexistent username");
+
+        }
         
-        if(! user.getPassword().equals(password))
+        if(! user.getPassword().equals(password)) {
+            cont++;
+            triedThreeTimes();
             throw new Exception("Wrong password");
+        }
+            
         
         PagePM pagePM = null;
         if(user.getType() == UserType.ADMIN)
@@ -61,10 +84,18 @@ public class PerformLoginPM {
         
         pagePM.setLoggedUser(user);
         
+        cont = 0;
+        
         return pagePM;
     }
 
     void setUserDao(UserDAO userDao) {
         this.userDao = userDao;
+    }
+    
+    private void triedThreeTimes() throws Exception{
+        if(cont == 4) {
+            throw new Exception("Already tried 3 times");
+        }
     }
 }
