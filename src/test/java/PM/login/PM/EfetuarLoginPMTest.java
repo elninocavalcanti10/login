@@ -156,22 +156,19 @@ public class EfetuarLoginPMTest {
         for (int i = 0; i < 4; i++) {
 
             try {
-                
-                if(i == 2) {
+
+                if (i == 2) {
                     efetuarLoginPM.setPassword("admin");
                 }
-                
+
                 efetuarLoginPM.pressLogin();
             } catch (Exception e) {
                 if (efetuarLoginPM.getCont() == 4) {
                     assertEquals("Already tried 3 times", e.getMessage());
                 }
-//                assertEquals("Wrong password", e.getMessage());
-
             }
         }
 
     }
 
-    
 }
